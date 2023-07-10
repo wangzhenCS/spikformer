@@ -28,6 +28,7 @@ from spikingjelly.clock_driven import functional
 import torch
 import torch.nn as nn
 import torchvision.utils
+import torchvision
 from torch.nn.parallel import DistributedDataParallel as NativeDDP
 
 from timm.data import create_dataset, resolve_data_config, Mixup, FastCollateMixup, AugMixDataset
@@ -489,7 +490,7 @@ def main():
 
     if args.local_rank == 0:
         _logger.info('Scheduled epochs: {}'.format(num_epochs))
-
+'''
     # create the train and eval datasets
     dataset_train = create_dataset(
         args.dataset,
@@ -563,6 +564,35 @@ def main():
         crop_pct=data_config['crop_pct'],
         pin_memory=args.pin_mem,
     )
+'''
+
+#-------------------------------------------------------------------------
+    # 加载实验数据集
+    transform = torchvision.transforms.Compose(
+        [torchvision.transforms.Grayscale(),# 转成单通道的灰度图
+        # 把值转成Tensor
+        torchvision.transforms.ToTensor()])
+
+    dataset = torchvision.datasets.ImageFolder("/kaggle/input/ddos-2019/Dataset-4/Dataset-4", 
+                                                transform=transform)
+
+    # 切分，训练集和验证集
+    random.seed(0)
+    indices = list(range(len(dataset)))
+    random.shuffle(indices)
+    split_point = int(0.8*len(indices))
+    train_indices = indices[:split_point]
+    test_indices = indices[split_point:]
+
+    loader_train = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size,
+                          sampler=torch.utils.data.SubsetRandomSampler(train_indices))
+
+    loader_eval = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size,
+                         sampler=torch.utils.data.SubsetRandomSampler(test_indices))
+
+#-------------------------------------------------------------------------
+
+
 
     # setup loss function
     if args.jsd:
