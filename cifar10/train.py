@@ -41,6 +41,9 @@ from timm.optim import create_optimizer_v2, optimizer_kwargs
 from timm.scheduler import create_scheduler
 from timm.utils import ApexScaler, NativeScaler
 import model
+
+import random
+
 try:
     from apex import amp
     from apex.parallel import DistributedDataParallel as ApexDDP
