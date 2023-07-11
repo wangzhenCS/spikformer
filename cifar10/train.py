@@ -584,7 +584,7 @@ def main():
         # 自动调整学习率
         # 余弦退火, T_max是cos周期1/4（函数值从1到0需要经过的迭代周期）
         CosineLR = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
-                    T_max=epochs, verbose=True) 
+                    T_max=num_epochs, verbose=True) 
 
         # 开始训练
         acc_record = list([])
