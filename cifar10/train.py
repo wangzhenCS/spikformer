@@ -385,9 +385,11 @@ def main():
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"number of params: {n_parameters}")
 
-    if args.num_classes is None:
-        assert hasattr(model, 'num_classes'), 'Model must have `num_classes` attr if not set on cmd line/config.'
-        args.num_classes = model.num_classes  # FIXME handle model default vs config num_classes more elegantly
+    #if args.num_classes is None:
+    #    assert hasattr(model, 'num_classes'), 'Model must have `num_classes` attr if not set on cmd line/config.'
+    #    args.num_classes = model.num_classes  # FIXME handle model default vs config num_classes more elegantly
+    # 重置该值
+    args.num_classes = 10
 
     if args.local_rank == 0:
         _logger.info(
