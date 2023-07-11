@@ -576,7 +576,8 @@ def main():
         with open(os.path.join(output_dir, 'args.yaml'), 'w') as f:
             f.write(args_text)
 
-    try:# 更换成自己的训练逻辑
+    try:
+        '''
         loss_fn = nn.CrossEntropyLoss().cuda()
         # 设置优化器
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -690,7 +691,7 @@ def main():
                 save_metric = eval_metrics[eval_metric]
                 best_metric, best_epoch = saver.save_checkpoint(epoch, metric=save_metric)
                 _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
-            '''
+            #'''
 
     except KeyboardInterrupt:
         pass
