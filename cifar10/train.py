@@ -536,7 +536,7 @@ def main():
             assert not num_aug_splits  # collate conflict (need to support deinterleaving in collate mixup)
             collate_fn = FastCollateMixup(**mixup_args)
         else:
-            mixup_fn = Mixup(**mixup_args)
+            mixup_fn = None # Mixup(**mixup_args)
 
 
     # setup loss function
