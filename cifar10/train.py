@@ -499,6 +499,8 @@ def main():
         _logger.info('Scheduled epochs: {}'.format(num_epochs))
     
     #-------------------------------------------------------------------------
+    args.batch_size = 40
+    
     # 加载实验数据集
     transform = torchvision.transforms.Compose(
         [torchvision.transforms.Grayscale(),# 转成单通道的灰度图
