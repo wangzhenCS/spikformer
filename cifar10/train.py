@@ -581,7 +581,7 @@ def main():
         for epoch in range(start_epoch, num_epochs):
             if args.distributed and hasattr(loader_train.sampler, 'set_epoch'):
                 loader_train.sampler.set_epoch(epoch)
-            print(model)###
+            
             train_metrics = train_one_epoch(
                 epoch, model, loader_train, optimizer, train_loss_fn, args,
                 lr_scheduler=lr_scheduler, saver=saver, output_dir=output_dir,
@@ -658,7 +658,7 @@ def train_one_epoch(
             output = output.cuda()
             temp = torch.zeros(args.batch_size, 10).cuda() ###
             target = temp.scatter_(1, target.view(-1, 1), 1)
-            print('output:'+str(output.shape)+' target:'+str(target.shape))
+            #print('output:'+str(output.shape)+' target:'+str(target.shape))
             loss = loss_fn(output, target)
 
         if not args.distributed:
