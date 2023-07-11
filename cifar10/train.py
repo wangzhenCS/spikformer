@@ -640,10 +640,10 @@ def train_one_epoch(
     for batch_idx, (input, target) in enumerate(loader):
         last_batch = batch_idx == last_idx
         data_time_m.update(time.time() - end)
-        if not args.prefetcher:
-            input, target = input.cuda(), target.cuda()
-            if mixup_fn is not None:
-                input, target = mixup_fn(input, target)
+        #if not args.prefetcher:
+        input, target = input.cuda(), target.cuda()
+        if mixup_fn is not None:
+            input, target = mixup_fn(input, target)
         if args.channels_last:
             input = input.contiguous(memory_format=torch.channels_last)
 
@@ -740,9 +740,9 @@ def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='')
     with torch.no_grad():
         for batch_idx, (input, target) in enumerate(loader):
             last_batch = batch_idx == last_idx
-            if not args.prefetcher:
-                input = input.cuda()
-                target = target.cuda()
+            #if not args.prefetcher:
+            input = input.cuda()
+            target = target.cuda()
             if args.channels_last:
                 input = input.contiguous(memory_format=torch.channels_last)
 
