@@ -763,8 +763,8 @@ def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='')
             with amp_autocast():
                 output = model(input)
                 output = output.cuda()
-            if isinstance(output, (tuple, list)):
-                output = output[0]
+            #if isinstance(output, (tuple, list)):
+            #    output = output[0]
 
             # augmentation reduction
             #reduce_factor = args.tta
