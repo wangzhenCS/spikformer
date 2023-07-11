@@ -653,8 +653,9 @@ def train_one_epoch(
 
         with amp_autocast():
             output = model(input)
-            print('output:'+str(output.shape)+' target:'+str(target.shape))
+            output = output.cuda()
             target = torch.zeros(128, 10).scatter_(1, target.view(-1, 1), 1)###
+            print('output:'+str(output.shape)+' target:'+str(target.shape))
             loss = loss_fn(output, target)
 
         if not args.distributed:
@@ -755,6 +756,7 @@ def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='')
 
             with amp_autocast():
                 output = model(input)
+                output = output.cuda()
             if isinstance(output, (tuple, list)):
                 output = output[0]
 
