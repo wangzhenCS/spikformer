@@ -197,7 +197,7 @@ class Spikformer(nn.Module):
         setattr(self, f"block", block)
 
         # classification head
-        self.head = nn.Linear(embed_dims, num_classes) if num_classes > 0 else nn.Identity()
+        self.head = nn.Linear(embed_dims, 10)
         self.apply(self._init_weights)
 
     @torch.jit.ignore
