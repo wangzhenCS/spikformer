@@ -321,7 +321,6 @@ def _parse_args():
     args_text = yaml.safe_dump(args.__dict__, default_flow_style=False)
     return args, args_text
 
-
 def main():
     setup_default_logging()
     args, args_text = _parse_args()
@@ -577,7 +576,82 @@ def main():
         with open(os.path.join(output_dir, 'args.yaml'), 'w') as f:
             f.write(args_text)
 
-    try:
+    try:# 更换成自己的训练逻辑
+        
+        # 设置优化器
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+
+        # 自动调整学习率
+        # 余弦退火, T_max是cos周期1/4（函数值从1到0需要经过的迭代周期）
+        CosineLR = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, 
+                    T_max=epochs, verbose=True) 
+
+        # 开始训练
+        acc_record = list([])
+        loss_train_record = list([])
+        loss_test_record = list([])
+        for epoch in range(num_epochs):
+            running_loss = 0 # total loss in every 200 batches
+            start_time = time.time() # 开始时间
+            for i, (input, target) in enumerate(loader_train):
+                # 避免上一批次的训练梯度影响本批次的操作
+                model.zero_grad()        # 先将梯度归零
+                optimizer.zero_grad()  # 先将梯度归零
+        
+                input, target = input.cuda(), target.cuda()
+                output = model(input)
+                output = output.cuda()
+                temp = torch.zeros(args.batch_size, 10).cuda() ###
+                target = temp.scatter_(1, target.view(-1, 1), 1)
+
+                loss = loss_fn(output, target)
+        
+                running_loss += loss.item()
+                # 反向传播计算得到每个参数的梯度值
+                loss.backward()
+                # 通过梯度下降执行一步参数更新
+                optimizer.step()
+        
+                if (i+1)%200 == 0:
+                    print ('Epoch [%d/%d], Step [%d/%d], Loss: %.5f'%(epoch+1, 
+                            epochs, i+1, split_point//batch_size,running_loss))
+                    running_loss = 0
+            print('Time elasped:', time.time()-start_time)
+            loss_train_record.append(running_loss/(i+1))
+
+            # testing 
+            correct = 0
+            total = 0
+            running_loss = 0
+            with torch.no_grad():
+                for batch_idx, (inputs, targets) in enumerate(loader_eval):
+                    inputs = inputs.cuda()
+                    targets = targets.cuda()
+
+                    optimizer.zero_grad()
+                    outputs = model(inputs)
+
+                    temp = torch.zeros(args.batch_size, 10).cuda() ###
+                    targets = temp.scatter_(1, target.view(-1, 1), 1)
+
+                    loss = loss_fn(outputs, targets)
+            
+                    running_loss += loss.item()
+                    _, predicted = outputs.max(1)
+            
+                    total += float(targets.size(0))
+                    correct += float(predicted.eq(targets).sum().item())
+                    if batch_idx % int(10000/batch_size) == 0:
+                        acc = 100. * float(correct) / float(total)
+            # print(batch_idx, len(test_loader),' Acc: %.5f' % acc)
+            print('Epoch: %d,Testing acc:%.3f'%(epoch+1,100*correct/total))
+            acc = 100. * float(correct) / float(total)
+            acc_record.append(acc)
+            loss_test_record.append(running_loss / (batch_idx + 1)) # 测试集上的平均loss
+            # 调整学习率 每个epoch训练完，调整一次
+            CosineLR.step()
+    
+        '''
         for epoch in range(start_epoch, num_epochs):
             if args.distributed and hasattr(loader_train.sampler, 'set_epoch'):
                 loader_train.sampler.set_epoch(epoch)
@@ -616,11 +690,12 @@ def main():
                 save_metric = eval_metrics[eval_metric]
                 best_metric, best_epoch = saver.save_checkpoint(epoch, metric=save_metric)
                 _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
+            '''
 
     except KeyboardInterrupt:
         pass
-    if best_metric is not None:
-        _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
+    #if best_metric is not None:
+    #    _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
 
 
 def train_one_epoch(
