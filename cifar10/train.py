@@ -654,7 +654,8 @@ def train_one_epoch(
         with amp_autocast():
             output = model(input)
             output = output.cuda()
-            target = torch.zeros(128, 10).scatter_(1, target.view(-1, 1), 1)###
+            temp = torch.zeros(128, 10).cuda() ###
+            target = temp.scatter_(1, target.view(-1, 1), 1)
             print('output:'+str(output.shape)+' target:'+str(target.shape))
             loss = loss_fn(output, target)
 
@@ -750,7 +751,10 @@ def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='')
             #if not args.prefetcher:
             input = input.cuda()
             target = target.cuda()
-            target = torch.zeros(128, 10).scatter_(1, target.view(-1, 1), 1)###
+            
+            temp = torch.zeros(128, 10).cuda() ###
+            target = temp.scatter_(1, target.view(-1, 1), 1)
+            
             if args.channels_last:
                 input = input.contiguous(memory_format=torch.channels_last)
 
