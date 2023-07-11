@@ -577,7 +577,7 @@ def main():
             f.write(args_text)
 
     try:# 更换成自己的训练逻辑
-        
+        loss_fn = nn.CrossEntropyLoss().cuda()
         # 设置优化器
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
