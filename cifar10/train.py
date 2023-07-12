@@ -698,7 +698,7 @@ def main():
         pass
 
     # 保存模型训练结果
-    torch.save(model.state_dict(), '/kaggle/working/trained-model.pt')
+    torch.save(model, '/kaggle/working/trained-model.pt')
     
     #if best_metric is not None:
     #    _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
