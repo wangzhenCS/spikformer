@@ -814,7 +814,10 @@ def train_one_epoch(
 
     if hasattr(optimizer, 'sync_lookahead'):
         optimizer.sync_lookahead()
-
+        
+    # 保存模型训练结果
+    torch.save(model, '/kaggle/working/trained-model'+str(epoch)+'.pt')
+            
     return OrderedDict([('loss', losses_m.avg)])
 
 
