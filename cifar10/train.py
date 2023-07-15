@@ -662,6 +662,8 @@ def main():
                 lr_scheduler=lr_scheduler, saver=saver, output_dir=output_dir,
                 amp_autocast=amp_autocast, loss_scaler=loss_scaler, model_ema=model_ema, mixup_fn=mixup_fn)
 
+            # 保存模型训练结果
+            torch.save(model, '/kaggle/working/trained-model'+str(epoch)+'.pt')
             '''
             if args.distributed and args.dist_bn in ('broadcast', 'reduce'):
                 if args.local_rank == 0:
