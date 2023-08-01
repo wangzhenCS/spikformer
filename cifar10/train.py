@@ -469,11 +469,11 @@ def main():
                     T_max=num_epochs, verbose=True)
     
     start_epoch = 0
-    if args.start_epoch is not None:
-        # a specified start_epoch will always override the resume epoch
-        start_epoch = args.start_epoch
-    elif resume_epoch is not None:
-        start_epoch = resume_epoch
+    #if args.start_epoch is not None:
+    #    # a specified start_epoch will always override the resume epoch
+    #    start_epoch = args.start_epoch
+    #elif resume_epoch is not None:
+    #    start_epoch = resume_epoch
     if lr_scheduler is not None and start_epoch > 0:
         lr_scheduler.step(start_epoch)
 
