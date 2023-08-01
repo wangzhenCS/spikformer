@@ -431,33 +431,13 @@ def main():
         assert not args.sync_bn, 'Cannot use SyncBatchNorm with torchscripted model'
         model = torch.jit.script(model)
 
-    optimizer = create_optimizer_v2(model, **optimizer_kwargs(cfg=args))
+    #optimizer = create_optimizer_v2(model, **optimizer_kwargs(cfg=args))
+    # 设置优化器
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     # setup automatic mixed-precision (AMP) loss scaling and op casting
     amp_autocast = suppress  # do nothing
     loss_scaler = None
-    if use_amp == 'apex':
-        model, optimizer = amp.initialize(model, optimizer, opt_level='O1')
-        loss_scaler = ApexScaler()
-        if args.local_rank == 0:
-            _logger.info('Using NVIDIA APEX AMP. Training in mixed precision.')
-    elif use_amp == 'native':
-        amp_autocast = torch.cuda.amp.autocast
-        loss_scaler = NativeScaler()
-        if args.local_rank == 0:
-            _logger.info('Using native Torch AMP. Training in mixed precision.')
-    else:
-        if args.local_rank == 0:
-            _logger.info('AMP not enabled. Training in float32.')
-
-    # optionally resume from a checkpoint
-    resume_epoch = None
-    if args.resume:
-        resume_epoch = resume_checkpoint(
-            model, args.resume,
-            optimizer=None if args.no_resume_opt else optimizer,
-            loss_scaler=None if args.no_resume_opt else loss_scaler,
-            log_info=args.local_rank == 0)
 
     # setup exponential moving average of model weights, SWA could be used here too
     model_ema = None
