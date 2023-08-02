@@ -647,7 +647,7 @@ def main():
 
             # 每5轮保存一次模型
             if (epoch+1) % 5 == 0:
-                torch.save(snn, '/kaggle/working/model-'+str(epoch+1)+'.pt')
+                torch.save(model, '/kaggle/working/model-'+str(epoch+1)+'.pt')
             lr_scheduler.step()
             '''
             if args.distributed and args.dist_bn in ('broadcast', 'reduce'):
