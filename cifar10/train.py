@@ -489,7 +489,11 @@ def main():
         # 把值转成Tensor
         torchvision.transforms.ToTensor()])
 
-    dataset = torchvision.datasets.ImageFolder("/kaggle/input/ddos-2019/Dataset-4/Dataset-4", 
+    #dataset = torchvision.datasets.ImageFolder("/kaggle/input/ddos-2019/Dataset-4/Dataset-4", 
+    #                                            transform=transform)
+    #dataset = torchvision.datasets.ImageFolder("/kaggle/input/cse-cic-ids2018-for-snn", 
+    #                                            transform=transform)
+    dataset = torchvision.datasets.ImageFolder("/kaggle/input/nsl-kdd-for-snn/data", 
                                                 transform=transform)
 
     # 切分，训练集和验证集
@@ -685,7 +689,7 @@ def main():
         pass
 
     # 保存模型训练结果
-    torch.save(model, '/kaggle/working/trained-model.pt')
+    torch.save(model, '/kaggle/working/trained-NSL.pt')
     
     #if best_metric is not None:
     #    _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
