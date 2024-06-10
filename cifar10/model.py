@@ -115,26 +115,26 @@ class SPS(nn.Module):
         self.C = in_channels
         self.H, self.W = self.image_size[0] // patch_size[0], self.image_size[1] // patch_size[1]
         self.num_patches = self.H * self.W
-        self.proj_conv = nn.Conv2d(in_channels, embed_dims//8, kernel_size=3, stride=1, padding=1, bias=False)
-        self.proj_bn = nn.BatchNorm2d(embed_dims//8)
+        self.proj_conv = nn.Conv1d(in_channels, embed_dims//8, kernel_size=3, stride=1, padding=1, bias=False)
+        self.proj_bn = nn.BatchNorm1d(embed_dims//8)
         self.proj_lif = MultiStepLIFNode(tau=2.0, detach_reset=True, backend='torch')
 
-        self.proj_conv1 = nn.Conv2d(embed_dims//8, embed_dims//4, kernel_size=3, stride=1, padding=1, bias=False)
-        self.proj_bn1 = nn.BatchNorm2d(embed_dims//4)
+        self.proj_conv1 = nn.Conv1d(embed_dims//8, embed_dims//4, kernel_size=3, stride=1, padding=1, bias=False)
+        self.proj_bn1 = nn.BatchNorm1d(embed_dims//4)
         self.proj_lif1 = MultiStepLIFNode(tau=2.0, detach_reset=True, backend='torch')
 
-        self.proj_conv2 = nn.Conv2d(embed_dims//4, embed_dims//2, kernel_size=3, stride=1, padding=1, bias=False)
-        self.proj_bn2 = nn.BatchNorm2d(embed_dims//2)
+        self.proj_conv2 = nn.Conv1d(embed_dims//4, embed_dims//2, kernel_size=3, stride=1, padding=1, bias=False)
+        self.proj_bn2 = nn.BatchNorm1d(embed_dims//2)
         self.proj_lif2 = MultiStepLIFNode(tau=2.0, detach_reset=True, backend='torch')
-        self.maxpool2 = torch.nn.MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+        self.maxpool2 = torch.nn.MaxPool1d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
 
-        self.proj_conv3 = nn.Conv2d(embed_dims//2, embed_dims, kernel_size=3, stride=1, padding=1, bias=False)
-        self.proj_bn3 = nn.BatchNorm2d(embed_dims)
+        self.proj_conv3 = nn.Conv1d(embed_dims//2, embed_dims, kernel_size=3, stride=1, padding=1, bias=False)
+        self.proj_bn3 = nn.BatchNorm1d(embed_dims)
         self.proj_lif3 = MultiStepLIFNode(tau=2.0, detach_reset=True, backend='torch')
-        self.maxpool3 = torch.nn.MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+        self.maxpool3 = torch.nn.MaxPool1d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
 
-        self.rpe_conv = nn.Conv2d(embed_dims, embed_dims, kernel_size=3, stride=1, padding=1, bias=False)
-        self.rpe_bn = nn.BatchNorm2d(embed_dims)
+        self.rpe_conv = nn.Conv1d(embed_dims, embed_dims, kernel_size=3, stride=1, padding=1, bias=False)
+        self.rpe_bn = nn.BatchNorm1d(embed_dims)
         self.rpe_lif = MultiStepLIFNode(tau=2.0, detach_reset=True, backend='torch')
 
     def forward(self, x):
