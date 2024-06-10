@@ -711,6 +711,8 @@ def train_one_epoch(
         last_batch = batch_idx == last_idx
         data_time_m.update(time.time() - end)
         #if not args.prefetcher:
+        # 拓展第1维
+        input = input.unsqueeze(1)
         input, target = input.cuda(), target.cuda()
         if mixup_fn is not None:
             input, target = mixup_fn(input, target)
