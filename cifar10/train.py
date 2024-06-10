@@ -498,9 +498,9 @@ def main():
     # 切分，训练集和验证集
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    train_loader = DataLoader(list(zip(X_train, y_train)), shuffle=True, batch_size=args.batch_size)
+    loader_train = DataLoader(list(zip(X_train, y_train)), shuffle=True, batch_size=args.batch_size)
     
-    test_loader = DataLoader(list(zip(X_test, y_test)), shuffle=True, batch_size=args.batch_size)
+    loader_test = DataLoader(list(zip(X_test, y_test)), shuffle=True, batch_size=args.batch_size)
 
     #-------------------------------------------------------------------------
     # setup mixup / cutmix
