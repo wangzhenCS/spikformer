@@ -43,6 +43,7 @@ from timm.utils import ApexScaler, NativeScaler
 import model
 
 import random
+from sklearn.model_selection import train_test_split
 
 try:
     from apex import amp
@@ -374,9 +375,9 @@ def main():
         drop_rate=0.,
         drop_path_rate=0.,
         drop_block_rate=None,
-        img_size_h=args.img_size, img_size_w=args.img_size,
+        img_size_h=1, img_size_w=27,
         patch_size=args.patch_size, embed_dims=args.dim, num_heads=args.num_heads, mlp_ratios=args.mlp_ratio,
-        in_channels=1, num_classes=10, qkv_bias=False,
+        in_channels=1, num_classes=8, qkv_bias=False,
         depths=args.layer, sr_ratios=1,
         T=args.time_step
     )
@@ -389,7 +390,7 @@ def main():
     #    assert hasattr(model, 'num_classes'), 'Model must have `num_classes` attr if not set on cmd line/config.'
     #    args.num_classes = model.num_classes  # FIXME handle model default vs config num_classes more elegantly
     # 重置该值
-    args.num_classes = 10
+    args.num_classes = 8
 
     if args.local_rank == 0:
         _logger.info(
@@ -484,31 +485,20 @@ def main():
     args.batch_size = 40
     
     # 加载实验数据集
-    transform = torchvision.transforms.Compose(
-        [torchvision.transforms.Grayscale(),# 转成单通道的灰度图
-        # 把值转成Tensor
-        torchvision.transforms.ToTensor()])
-
-    #dataset = torchvision.datasets.ImageFolder("/kaggle/input/ddos-2019/Dataset-4/Dataset-4", 
-    #                                            transform=transform)
-    dataset = torchvision.datasets.ImageFolder("/kaggle/input/cse-cic-ids2018-for-snn", 
-                                                transform=transform)
-    #dataset = torchvision.datasets.ImageFolder("/kaggle/input/nsl-kdd-for-snn/data", 
-    #                                            transform=transform)
-
+    path = '/kaggle/input/ciciot2023/selected_PSO.csv'
+    data = pd.read_csv(path, index_col=False)
+    
+    counts = data['label'].value_counts()
+    print(counts)
+    
+    X, y = data.iloc[:, :-1].values, data.iloc[:, -1].values
+    
     # 切分，训练集和验证集
-    random.seed(0)
-    indices = list(range(len(dataset)))
-    random.shuffle(indices)
-    split_point = int(0.8*len(indices))
-    train_indices = indices[:split_point]
-    test_indices = indices[split_point:]
-
-    loader_train = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size,
-                          sampler=torch.utils.data.SubsetRandomSampler(train_indices))
-
-    loader_eval = torch.utils.data.DataLoader(dataset, batch_size=args.batch_size,
-                         sampler=torch.utils.data.SubsetRandomSampler(test_indices))
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    train_loader = DataLoader(list(zip(X_train, y_train)), shuffle=True, batch_size=batch_size)
+    
+    test_loader = DataLoader(list(zip(X_test, y_test)), shuffle=True, batch_size=batch_size)
 
     #-------------------------------------------------------------------------
     # setup mixup / cutmix
@@ -689,7 +679,7 @@ def main():
         pass
 
     # 保存模型训练结果
-    torch.save(model, '/kaggle/working/trained-CIC.pt')
+    torch.save(model, '/kaggle/working/trained-2023.pt')
     
     #if best_metric is not None:
     #    _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
