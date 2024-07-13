@@ -389,7 +389,7 @@ def main():
     #    assert hasattr(model, 'num_classes'), 'Model must have `num_classes` attr if not set on cmd line/config.'
     #    args.num_classes = model.num_classes  # FIXME handle model default vs config num_classes more elegantly
     # 重置该值
-    args.num_classes = 10
+    args.num_classes = 8
 
     if args.local_rank == 0:
         _logger.info(
@@ -689,7 +689,7 @@ def main():
         pass
 
     # 保存模型训练结果
-    torch.save(model, '/kaggle/working/trained-CIC.pt')
+    torch.save(model, '/kaggle/working/trained-CICIoT2023.pt')
     
     #if best_metric is not None:
     #    _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
