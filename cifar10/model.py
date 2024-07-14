@@ -197,7 +197,7 @@ class Spikformer(nn.Module):
         setattr(self, f"block", block)
 
         # classification head
-        self.head = nn.Linear(embed_dims, 8)
+        self.head = nn.Linear(embed_dims, 6)
         self.apply(self._init_weights)
 
     @torch.jit.ignore
