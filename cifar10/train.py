@@ -491,7 +491,7 @@ def main():
 
     #dataset = torchvision.datasets.ImageFolder("/kaggle/input/ddos-2019/Dataset-4/Dataset-4", 
     #                                            transform=transform)
-    dataset = torchvision.datasets.ImageFolder("/kaggle/input/thesis-ciciot2023/thesis", 
+    dataset = torchvision.datasets.ImageFolder("/kaggle/input/thesis-iomt2024/thesis", 
                                                 transform=transform)
     #dataset = torchvision.datasets.ImageFolder("/kaggle/input/nsl-kdd-for-snn/data", 
     #                                            transform=transform)
@@ -689,7 +689,7 @@ def main():
         pass
 
     # 保存模型训练结果
-    torch.save(model, '/kaggle/working/trained-CICIoT2023.pt')
+    torch.save(model, '/kaggle/working/trained-IoMT2024.pt')
     
     #if best_metric is not None:
     #    _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
@@ -728,7 +728,7 @@ def train_one_epoch(
         with amp_autocast():
             output = model(input)
             output = output.cuda()
-            temp = torch.zeros(args.batch_size, 8).cuda() ###
+            temp = torch.zeros(args.batch_size, 6).cuda() ###
             target = temp.scatter_(1, target.view(-1, 1), 1)
             #print('output:'+str(output.shape)+' target:'+str(target.shape))
             loss = loss_fn(output, target)
@@ -829,7 +829,7 @@ def validate(model, loader, loss_fn, args, amp_autocast=suppress, log_suffix='')
             input = input.cuda()
             target = target.cuda()
             
-            temp = torch.zeros(args.batch_size, 8).cuda() ###
+            temp = torch.zeros(args.batch_size, 6).cuda() ###
             target = temp.scatter_(1, target.view(-1, 1), 1)
             
             if args.channels_last:
