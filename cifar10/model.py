@@ -169,7 +169,7 @@ class SPS(nn.Module):
 
 class Spikformer(nn.Module):
     def __init__(self,
-                 img_size_h=24, img_size_w=24, patch_size=16, in_channels=1, num_classes=8,
+                 img_size_h=24, img_size_w=24, patch_size=16, in_channels=1, num_classes=6,
                  embed_dims=64, num_heads=1, mlp_ratios=4, qkv_bias=False, qk_scale=None,
                  drop_rate=0., attn_drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
                  depths=6, sr_ratios=2, T = 4
