@@ -491,7 +491,7 @@ def main():
 
     #dataset = torchvision.datasets.ImageFolder("/kaggle/input/ddos-2019/Dataset-4/Dataset-4", 
     #                                            transform=transform)
-    dataset = torchvision.datasets.ImageFolder("/kaggle/input/thesis-iomt2024/thesis", 
+    dataset = torchvision.datasets.ImageFolder("/kaggle/input/img-iomt2024/img", 
                                                 transform=transform)
     #dataset = torchvision.datasets.ImageFolder("/kaggle/input/nsl-kdd-for-snn/data", 
     #                                            transform=transform)
